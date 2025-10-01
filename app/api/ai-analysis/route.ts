@@ -18,7 +18,7 @@ async function generateAIInsights(url: string, htmlContent: string, currentCheck
 async function generateGeminiInsights(url: string, htmlContent: string, currentChecks: any[]) {
   try {
     // Use the gemini-1.5-flash model for a good balance of speed and capability
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const prompt = `Analyze this webpage for AI readiness. This could be ANY type of site - adapt your analysis accordingly.
 
