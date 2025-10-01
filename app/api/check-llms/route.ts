@@ -5,24 +5,48 @@ const firecrawl = new FirecrawlApp({
   apiKey: process.env.FIRECRAWL_API_KEY!
 });
 
+interface CheckResult {
+  filename: string;
+  fetchStatus?: number;
+  fetchOk?: boolean;
+  contentLength?: number;
+  isHTML?: boolean;
+  has404?: boolean;
+  hasLLMContent?: boolean;
+  first100Chars?: string;
+  error?: string;
+}
+
+interface Results {
+  url: string;
+  checks: CheckResult[];
+  firecrawlResult?: {
+    success: boolean;
+    hasContent?: boolean;
+    contentLength?: number;
+    first100Chars?: string;
+    error?: string;
+  };
+}
+
+
 export async function POST(request: NextRequest) {
   try {
-    let { url } = await request.json();
+    const { url } = await request.json();
     
     if (!url) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
     
-    // Ensure URL has protocol
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
+    let processedUrl = url;
+    if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
+      processedUrl = 'https://' + processedUrl;
     }
     
-    const baseUrl = new URL(url).origin;
+    const baseUrl = new URL(processedUrl).origin;
     
-    // Check for llms.txt variations directly
     const variations = ['llms.txt', 'LLMs.txt', 'llms-full.txt'];
-    const results: any = {
+    const results: Results = {
       url: baseUrl,
       checks: []
     };
@@ -31,7 +55,6 @@ export async function POST(request: NextRequest) {
       const testUrl = `${baseUrl}/${filename}`;
       
       try {
-        // Try with fetch first
         const response = await fetch(testUrl);
         const text = await response.text();
         
@@ -52,15 +75,14 @@ export async function POST(request: NextRequest) {
           ),
           first100Chars: text.substring(0, 100)
         });
-      } catch (e: any) {
+      } catch (e: unknown) {
         results.checks.push({
           filename,
-          error: e.message
+          error: e instanceof Error ? e.message : String(e)
         });
       }
     }
     
-    // Also try with Firecrawl to see what it finds
     try {
       const scrapeResult = await firecrawl.scrape(`${baseUrl}/llms.txt`, {
         formats: ['markdown'],
@@ -72,19 +94,20 @@ export async function POST(request: NextRequest) {
         contentLength: scrapeResult?.markdown?.length || 0,
         first100Chars: scrapeResult?.markdown?.substring(0, 100)
       };
-    } catch (e: any) {
+    } catch (e: unknown) {
       results.firecrawlResult = {
         success: false,
-        error: e.message
+        error: e instanceof Error ? e.message : String(e)
       };
     }
     
     return NextResponse.json(results);
     
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Check LLMs error:', error);
     return NextResponse.json(
-      { error: 'Failed to check LLMs.txt: ' + error.message },
+      { error: 'Failed to check LLMs.txt: ' + errorMessage },
       { status: 500 }
     );
   }

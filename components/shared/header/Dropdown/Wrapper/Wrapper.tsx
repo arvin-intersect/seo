@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import { AnimatePresence, cubicBezier, motion } from "motion/react";
@@ -8,6 +7,7 @@ import { Connector } from "@/components/shared/layout/curvy-rect";
 import { useHeaderContext } from "@/components/shared/header/HeaderContext";
 import { lockBody } from "@/components/shared/lockBody";
 import AnimatedHeight from "@/components/shared/layout/animated-height";
+
 export default function HeaderDropdownWrapper() {
   const {
     dropdownContent,
@@ -57,15 +57,6 @@ export default function HeaderDropdownWrapper() {
           />
 
           <AnimatedHeight
-            animate={{
-              transition: { duration: 0.5, ease: cubicBezier(0.4, 0, 0.2, 1) },
-            }}
-            className="overflow-clip relative"
-            exit={{
-              height: 0,
-              transition: { duration: 0.3, ease: cubicBezier(0.4, 0, 0.2, 1) },
-            }}
-            initial={{ height: 0 }}
           >
             <AnimatePresence mode="popLayout">
               <motion.div

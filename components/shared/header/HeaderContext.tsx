@@ -7,6 +7,7 @@ import React, {
   useEffect,
   useRef,
   useState,
+  MutableRefObject,
 } from "react";
 
 interface HeaderContextType {
@@ -15,8 +16,8 @@ interface HeaderContextType {
   clearDropdown: (force?: boolean) => void;
   resetDropdownTimeout: () => void;
   dropdownKey: number;
-  headerHeight: React.RefObject<number>;
-  headerTop: React.RefObject<number>;
+  headerHeight: MutableRefObject<number>;
+  headerTop: MutableRefObject<number>;
 }
 
 const HeaderContext = createContext<HeaderContextType | undefined>(undefined);

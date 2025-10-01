@@ -12,8 +12,8 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Is Your Website AI Ready?",
-  description: "UI components and design system for Firecrawl",
+  title: "IntersectAI SEO Analyzer",
+  description: "Analyze your website's AI readiness with IntersectAI's internal tool.",
   icons: {
     icon: "/favicon.png",
   },

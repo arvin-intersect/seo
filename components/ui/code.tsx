@@ -1,5 +1,6 @@
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import { LanguageFn } from "react-syntax-highlighter/dist/esm/languages/prism/supported-languages";
 
 import "@/styles/components/code.css";
 
@@ -23,10 +24,8 @@ export default function Code({
     </SyntaxHighlighter>
   );
 }
-json.displayName = "json";
-json.aliases = ["webmanifest"];
 
-function json(Prism: any) {
+const json: LanguageFn = (Prism) => {
   // https://www.json.org/json-en.html
   Prism.languages.json = {
     property: {
@@ -54,12 +53,11 @@ function json(Prism: any) {
     },
   };
   Prism.languages.webmanifest = Prism.languages.json;
-}
+};
+json.displayName = "json";
+json.aliases = ["webmanifest"];
 
-python.displayName = "python";
-python.aliases = ["py", "gyp", "ipython"];
-
-function python(Prism: any) {
+const python: LanguageFn = (Prism) => {
   Prism.languages.python = {
     comment: {
       pattern: /(^|[^\\])#.*/,
@@ -83,12 +81,12 @@ function python(Prism: any) {
     operator:
       /[+%=]=?|!=|<=|>=|<<|>>|\*\*?|\/\/?|\/|&|\||\^|~|\b(?:is|is not|in|not in)\b/,
   };
-}
+};
+python.displayName = "python";
+python.aliases = ["py", "gyp", "ipython"];
 
-curl.displayName = "curl";
-curl.aliases = ["bash", "shell"];
 
-function curl(Prism: any) {
+const curl: LanguageFn = (Prism) => {
   Prism.languages.curl = {
     comment: {
       pattern: /#.*/,
@@ -106,7 +104,9 @@ function curl(Prism: any) {
     operator: /[=<>!&|]/,
     number: /\b\d+\b/,
   };
-}
+};
+curl.displayName = "curl";
+curl.aliases = ["bash", "shell"];
 
 SyntaxHighlighter.registerLanguage("json", json);
 SyntaxHighlighter.registerLanguage("python", python);

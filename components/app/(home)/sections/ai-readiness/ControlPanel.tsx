@@ -1,4 +1,3 @@
-// FILE: components/app/(home)/sections/ai-readiness/ControlPanel.tsx
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,10 +6,8 @@ import {
   FileText, 
   Code, 
   Shield, 
-  Search, 
   Zap, 
   Database,
-  Lock,
   CheckCircle2,
   XCircle,
   Loader2,
@@ -20,19 +17,35 @@ import {
   FileCode,
   Network,
   Info,
-  Eye
+  Eye,
+  LucideProps
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ComponentType } from "react";
 import ScoreChart from "./ScoreChart";
 import RadarChart from "./RadarChart";
 import MetricBars from "./MetricBars";
+
+interface AnalysisCheck {
+  id: string;
+  label: string;
+  status: 'pass' | 'fail' | 'warning';
+  score: number;
+  details: string;
+  recommendation: string;
+  actionItems?: string[];
+}
+interface AnalysisData {
+  checks: AnalysisCheck[];
+  overallScore: number;
+  htmlContent?: string;
+}
 
 interface ControlPanelProps {
   isAnalyzing: boolean;
   showResults: boolean;
   url: string;
-  analysisData?: any;
-  hasAiKey: boolean; // Add this prop
+  analysisData?: AnalysisData | null;
+  hasAiKey: boolean;
   onReset: () => void;
 }
 
@@ -40,13 +53,25 @@ interface CheckItem {
   id: string;
   label: string;
   description: string;
-  icon: any;
+  icon: ComponentType<LucideProps>;
   status: 'pending' | 'checking' | 'pass' | 'fail' | 'warning';
   score?: number;
   details?: string;
   recommendation?: string;
   actionItems?: string[];
   tooltip?: string;
+  isAI?: boolean;
+  isLoading?: boolean;
+}
+
+interface InsightItem {
+  id: string;
+  label: string;
+  score: number;
+  status: 'pass' | 'fail' | 'warning';
+  details: string;
+  recommendation: string;
+  actionItems?: string[];
 }
 
 export default function ControlPanel({
@@ -54,10 +79,9 @@ export default function ControlPanel({
   showResults,
   url,
   analysisData,
-  hasAiKey, // Destructure the prop
+  hasAiKey,
   onReset,
 }: ControlPanelProps) {
-  const [showAIAnalysis, setShowAIAnalysis] = useState(false);
   const [aiInsights, setAiInsights] = useState<CheckItem[]>([]);
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false);
   const [combinedChecks, setCombinedChecks] = useState<CheckItem[]>([]);
@@ -81,10 +105,10 @@ export default function ControlPanel({
 
   useEffect(() => {
     if (analysisData && analysisData.checks && showResults) {
-      const mappedChecks = analysisData.checks.map((check: any) => ({
+      const mappedChecks = analysisData.checks.map((check: AnalysisCheck) => ({
         ...check,
         icon: checks.find(c => c.id === check.id)?.icon || FileText,
-        description: check.details || checks.find(c => c.id === check.id)?.description,
+        description: check.details || checks.find(c => c.id === check.id)?.description || '',
       }));
       setChecks(mappedChecks);
       setCombinedChecks(mappedChecks);
@@ -109,6 +133,7 @@ export default function ControlPanel({
 
       return () => clearInterval(checkInterval);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnalyzing, showResults, analysisData]);
 
   useEffect(() => {
@@ -128,18 +153,12 @@ export default function ControlPanel({
 
   const getStatusIcon = (status: CheckItem['status']) => {
     switch (status) {
-      case 'checking': return <Loader2 className="w-16 h-16 text-heat-100 animate-spin" />;
+      case 'checking': return <Loader2 className="w-16 h-16 text-primary-100 animate-spin" />;
       case 'pass': return <CheckCircle2 className="w-16 h-16 text-accent-black" />;
-      case 'fail': return <XCircle className="w-16 h-16 text-heat-200" />;
-      case 'warning': return <AlertCircle className="w-16 h-16 text-heat-100" />;
+      case 'fail': return <XCircle className="w-16 h-16 text-red-400" />;
+      case 'warning': return <AlertCircle className="w-16 h-16 text-yellow-400" />;
       default: return <div className="w-16 h-16 rounded-full border border-black-alpha-8" />;
     }
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-accent-black";
-    if (score >= 60) return "text-accent-black";
-    return "text-accent-black";
   };
 
   return (
@@ -189,10 +208,10 @@ export default function ControlPanel({
           {combinedChecks.map((check, index) => (
             <motion.div
               key={check.id}
-              initial={(check as any).isAI ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+              initial={check.isAI ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: index === currentCheckIndex ? 1.05 : 1 }}
-              transition={{ delay: (check as any).isAI ? 0 : index * 0.1, scale: { type: "spring", stiffness: 300 } }}
-              className={`relative p-16 rounded-8 transition-all bg-accent-white border ${(check as any).isAI ? 'border-heat-100 border-opacity-40 bg-gradient-to-br from-accent-white to-heat-4' : 'border-black-alpha-8'} ${index === currentCheckIndex ? 'border-heat-100 shadow-lg' : ''} ${check.status !== 'pending' && check.status !== 'checking' ? 'cursor-pointer hover:shadow-md' : ''} ${(check as any).isLoading ? 'animate-pulse' : ''}`}
+              transition={{ delay: check.isAI ? 0 : index * 0.1, scale: { type: "spring", stiffness: 300 } }}
+              className={`relative p-16 rounded-8 transition-all bg-background-lighter border ${check.isAI ? 'border-primary-100 border-opacity-40 bg-gradient-to-br from-background-lighter to-primary-4' : 'border-black-alpha-8'} ${index === currentCheckIndex ? 'border-primary-100 shadow-lg' : ''} ${check.status !== 'pending' && check.status !== 'checking' ? 'cursor-pointer hover:shadow-md' : ''} ${check.isLoading ? 'animate-pulse' : ''}`}
               onClick={() => { if (check.status !== 'pending' && check.status !== 'checking') setSelectedCheck(selectedCheck === check.id ? null : check.id); }}
               onMouseEnter={() => setHoveredCheck(check.id)}
               onMouseLeave={() => setHoveredCheck(null)}
@@ -220,7 +239,7 @@ export default function ControlPanel({
                   <>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
                       <div className="h-2 bg-black-alpha-4 rounded-full overflow-hidden">
-                        <motion.div className={`h-full rounded-full ${check.status === 'pass' ? 'bg-accent-black' : ''} ${check.status === 'warning' ? 'bg-heat-100' : ''} ${check.status === 'fail' ? 'bg-heat-200' : ''}`} initial={{ width: 0 }} animate={{ width: `${check.score}%` }} transition={{ duration: 0.5 }} />
+                        <motion.div className={`h-full rounded-full ${check.status === 'pass' ? 'bg-accent-black' : ''} ${check.status === 'warning' ? 'bg-yellow-400' : ''} ${check.status === 'fail' ? 'bg-red-400' : ''}`} initial={{ width: 0 }} animate={{ width: `${check.score}%` }} transition={{ duration: 0.5 }} />
                       </div>
                     </motion.div>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="text-label-x-small text-black-alpha-32 mt-4 text-center">Click for details</motion.div>
@@ -242,7 +261,7 @@ export default function ControlPanel({
                           <ul className="mt-4 space-y-2">
                             {check.actionItems.map((item: string, i: number) => (
                               <li key={i} className="flex items-start gap-6 text-body-small text-black-alpha-64">
-                                <span className="text-heat-100 mt-1">•</span>
+                                <span className="text-primary-100 mt-1">•</span>
                                 <span>{item}</span>
                               </li>
                             ))}
@@ -272,18 +291,18 @@ export default function ControlPanel({
             {aiInsights.length > 0 && (<motion.div className="flex items-center" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2, type: "spring" }}><div className="text-label-large text-black-alpha-32 font-medium">VS</div></motion.div>)}
             {aiInsights.length > 0 && (
               <motion.div className="flex flex-col items-center" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
-                <h3 className="text-label-large text-heat-100 mb-16 font-medium">AI Enhanced Analysis</h3>
+                <h3 className="text-label-large text-primary-100 mb-16 font-medium">AI Enhanced Analysis</h3>
                 <RadarChart data={aiInsights.filter(check => check.status !== 'pending' && check.status !== 'checking').slice(0, 8).map(check => ({ label: check.label.length > 12 ? check.label.substring(0, 12) + '...' : check.label, score: check.score || 0 }))} size={350} />
                 <div className="mt-16 text-center">
-                  <div className="text-title-h3 text-heat-100">{Math.round(aiInsights.reduce((sum, check) => sum + (check.score || 0), 0) / aiInsights.length)}%</div>
-                  <div className="text-label-small text-heat-100 opacity-60">AI Score</div>
+                  <div className="text-title-h3 text-primary-100">{Math.round(aiInsights.reduce((sum, check) => sum + (check.score || 0), 0) / aiInsights.length)}%</div>
+                  <div className="text-label-small text-primary-100 opacity-60">AI Score</div>
                 </div>
               </motion.div>
             )}
           </motion.div>
           {aiInsights.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="text-center mb-20">
-              <div className="inline-flex items-center gap-8 px-16 py-8 bg-heat-4 rounded-8">
+              <div className="inline-flex items-center gap-8 px-16 py-8 bg-primary-4 rounded-8">
                 <span className="text-label-medium text-accent-black">AI analysis found {aiInsights.filter(i => i.score && i.score < 50).length} additional areas for improvement</span>
               </div>
             </motion.div>
@@ -293,20 +312,18 @@ export default function ControlPanel({
 
       {viewMode === 'bars' && showResults && (
         <motion.div className="px-40 mb-40" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-          <MetricBars metrics={combinedChecks.filter(check => check.status !== 'pending' && check.status !== 'checking').map(check => ({ label: check.label, score: check.score || 0, status: check.status as 'pass' | 'warning' | 'fail', category: (check as any).isAI ? 'ai' : ['robots-txt', 'sitemap', 'llms-txt'].includes(check.id) ? 'domain' : 'page', details: check.details, recommendation: check.recommendation, actionItems: check.actionItems }))} />
+          <MetricBars metrics={combinedChecks.filter(check => check.status !== 'pending' && check.status !== 'checking').map((check: CheckItem) => ({ label: check.label, score: check.score || 0, status: check.status as 'pass' | 'warning' | 'fail', category: check.isAI ? 'ai' : ['robots-txt', 'sitemap', 'llms-txt'].includes(check.id) ? 'domain' : 'page', details: check.details, recommendation: check.recommendation, actionItems: check.actionItems }))} />
         </motion.div>
       )}
 
       {showResults && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="flex gap-12 justify-center">
-          <button onClick={onReset} className="px-20 py-10 bg-accent-white border border-black-alpha-8 hover:bg-black-alpha-4 rounded-8 text-label-medium transition-all">Analyze Another Site</button>
-          {hasAiKey && ( // Conditionally render this button
+          <button onClick={onReset} className="px-20 py-10 bg-background-lighter border border-black-alpha-8 hover:bg-black-alpha-4 rounded-8 text-label-medium transition-all">Analyze Another Site</button>
+          {hasAiKey && (
             <button 
               onClick={async () => {
                 setIsAnalyzingAI(true);
-                setShowAIAnalysis(true);
-                
-                const placeholderAIChecks = [{ id: 'ai-loading-0', label: 'Content Quality for AI', description: 'Analyzing...', icon: Sparkles, status: 'checking' as const, score: 0, isAI: true, isLoading: true }, { id: 'ai-loading-1', label: 'Info. Architecture', description: 'Analyzing...', icon: Bot, status: 'checking' as const, score: 0, isAI: true, isLoading: true }, { id: 'ai-loading-2', label: 'Knowledge Extraction', description: 'Analyzing...', icon: Database, status: 'checking' as const, score: 0, isAI: true, isLoading: true }, { id: 'ai-loading-3', label: 'AI Training Value', description: 'Analyzing...', icon: Network, status: 'checking' as const, score: 0, isAI: true, isLoading: true }];
+                const placeholderAIChecks: CheckItem[] = [{ id: 'ai-loading-0', label: 'Content Quality for AI', description: 'Analyzing...', icon: Sparkles, status: 'checking' as const, score: 0, isAI: true, isLoading: true }, { id: 'ai-loading-1', label: 'Info. Architecture', description: 'Analyzing...', icon: Bot, status: 'checking' as const, score: 0, isAI: true, isLoading: true }, { id: 'ai-loading-2', label: 'Knowledge Extraction', description: 'Analyzing...', icon: Database, status: 'checking' as const, score: 0, isAI: true, isLoading: true }, { id: 'ai-loading-3', label: 'AI Training Value', description: 'Analyzing...', icon: Network, status: 'checking' as const, score: 0, isAI: true, isLoading: true }];
                 placeholderAIChecks.forEach((check, idx) => { setTimeout(() => { setCombinedChecks(prev => [...prev, check]); }, 100 * (idx + 1)); });
                 
                 try {
@@ -318,12 +335,12 @@ export default function ControlPanel({
                   
                   const data = await response.json();
                   if (data.success && data.insights) {
-                    const aiChecks: CheckItem[] = data.insights.map((insight: any, idx: number) => ({ ...insight, icon: [Sparkles, Bot, Database, Network, FileCode, Shield, Zap, Globe][idx % 8], description: insight.details?.substring(0, 60) + '...' || 'AI Analysis', isAI: true, }));
+                    const aiChecks: CheckItem[] = data.insights.map((insight: InsightItem, idx: number) => ({ ...insight, icon: [Sparkles, Bot, Database, Network, FileCode, Shield, Zap, Globe][idx % 8], description: insight.details?.substring(0, 60) + '...' || 'AI Analysis', isAI: true, }));
                     setAiInsights(aiChecks);
-                    setCombinedChecks(prev => { const withoutLoading = prev.filter(c => !(c as any).isLoading); return [...withoutLoading, ...aiChecks]; });
+                    setCombinedChecks(prev => { const withoutLoading = prev.filter(c => !c.isLoading); return [...withoutLoading, ...aiChecks]; });
                     
                     if (data.insights.length > 0) {
-                      const aiScores = data.insights.map((i: any) => i.score || 0);
+                      const aiScores = data.insights.map((i: InsightItem) => i.score || 0);
                       const avgAiScore = aiScores.reduce((a: number, b: number) => a + b, 0) / aiScores.length;
                       const combinedScore = Math.round((overallScore * 0.6) + (avgAiScore * 0.4));
                       setEnhancedScore(combinedScore);
@@ -331,7 +348,7 @@ export default function ControlPanel({
                   }
                 } catch (error) {
                   console.error('AI analysis error:', error);
-                  setCombinedChecks(prev => prev.filter(c => !(c as any).isLoading));
+                  setCombinedChecks(prev => prev.filter(c => !c.isLoading));
                 } finally {
                   setIsAnalyzingAI(false);
                 }

@@ -1,12 +1,6 @@
 import { animate } from "motion";
 import { Fragment, useRef } from "react";
 
-import EndpointsSearch from "@/components/app/(home)/sections/endpoints/EndpointsSearch/EndpointsSearch";
-import EndpointsCrawl from "@/components/app/(home)/sections/endpoints/EndpointsCrawl/EndpointsCrawl";
-import EndpointsMap from "@/components/app/(home)/sections/endpoints/EndpointsMap/EndpointsMap";
-import EndpointsScrape from "@/components/app/(home)/sections/endpoints/EndpointsScrape/EndpointsScrape";
-import EndpointsExtract from "@/components/app/(home)/sections/endpoints/EndpointsExtract/EndpointsExtract";
-
 import { cn } from "@/utils/cn";
 import Tooltip from "@/components/ui/shadcn/tooltip";
 import { Endpoint } from "@/components/shared/Playground/Context/types";
@@ -18,14 +12,12 @@ export const tabs = [
     action: "scraping",
     description:
       "Scrapes only the specified URL without crawling subpages. Outputs the content from the page.",
-    icon: EndpointsScrape,
   },
   {
     label: "Search",
     value: Endpoint.Search,
     description: "Search the web and get full content from results",
     action: "searching",
-    icon: EndpointsSearch,
     new: true,
   },
   {
@@ -33,7 +25,6 @@ export const tabs = [
     value: Endpoint.Map,
     action: "mapping",
     description: "Attempts to output all website's urls in a few seconds.",
-    icon: EndpointsMap,
   },
   {
     label: "Crawl",
@@ -41,7 +32,6 @@ export const tabs = [
     action: "crawling",
     description:
       "Crawls a URL and all its accessible subpages, outputting the content from each page.",
-    icon: EndpointsCrawl,
   },
   {
     label: "Extract",
@@ -49,7 +39,6 @@ export const tabs = [
     action: "extracting",
     description:
       "Extract structured data from pages using LLMs. Provide URLs and a schema to get organized data.",
-    icon: EndpointsExtract,
     new: true,
   },
 ];
@@ -60,7 +49,6 @@ export default function HeroInputTabs(props: {
   disabled?: boolean;
   allowedModes?: Endpoint[];
 }) {
-  // Filter tabs based on allowedModes if provided
   const visibleTabs = props.allowedModes
     ? tabs.filter((tab) => props.allowedModes!.includes(tab.value))
     : tabs;
@@ -71,7 +59,7 @@ export default function HeroInputTabs(props: {
 
   return (
     <div
-      className="bg-black-alpha-4 flex items-center rounded-10 p-2 relative lg-max:hidden"
+      className="bg-black-alpha-4 flex items-center rounded-10 p-2 relative"
       style={{
         boxShadow:
           "0px 6px 12px 0px rgba(0, 0, 0, 0.02) inset, 0px 0.75px 0.75px 0px rgba(0, 0, 0, 0.02) inset, 0px 0.25px 0.25px 0px rgba(0, 0, 0, 0.04) inset",
@@ -136,10 +124,12 @@ export default function HeroInputTabs(props: {
                 t instanceof HTMLButtonElement
                   ? t
                   : (t.closest("button") as HTMLButtonElement);
+              
+              if (!target) return;
 
               if (backgroundRef.current) {
                 animate(backgroundRef.current, { scale: 0.975 }).then(() =>
-                  animate(backgroundRef.current!, { scale: 1 }),
+                  backgroundRef.current && animate(backgroundRef.current, { scale: 1 }),
                 );
 
                 animate(
@@ -157,8 +147,6 @@ export default function HeroInputTabs(props: {
               }
             }}
           >
-            {tab.icon && <tab.icon active={tab.value === props.tab} />}
-
             <span className="px-6"> {tab.label}</span>
 
             {tab.new && (
@@ -166,7 +154,7 @@ export default function HeroInputTabs(props: {
                 className={cn(
                   "py-2 px-6 rounded-4 text-[12px]/[16px] font-[450] transition-all",
                   tab.value === props.tab
-                    ? "bg-heat-12 text-heat-100"
+                    ? "bg-primary-12 text-primary-100"
                     : "bg-black-alpha-4 text-black-alpha-56",
                 )}
               >

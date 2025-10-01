@@ -1,6 +1,6 @@
 import ArrowUp from "./_svg/ArrowUp";
 import Replit from "./_svg/Replit";
-import StoriesFlame from "./Flame/Flame";
+// The import for StoriesFlame has been removed.
 
 export default function HeaderDropdownStories() {
   return (
@@ -25,7 +25,7 @@ export default function HeaderDropdownStories() {
         power Replit Agent
       </div>
 
-      <StoriesFlame />
+      {/* The <StoriesFlame /> component has been removed from here. */}
     </a>
   );
 }

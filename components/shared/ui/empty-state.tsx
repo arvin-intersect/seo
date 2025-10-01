@@ -2,7 +2,6 @@
 
 import React from "react";
 import { cn } from "@/utils/cn";
-import { AsciiExplosion } from "@/components/shared/effects/flame";
 
 interface EmptyStateProps {
   title?: string;
@@ -29,10 +28,9 @@ export function EmptyState({
         className,
       )}
     >
-      {/* Subtle flame background */}
       {showFlame && (
         <div className="absolute inset-0 opacity-5">
-          <AsciiExplosion />
+          <div className="w-full h-full bg-primary-4 rounded-full blur-3xl animate-pulse" />
         </div>
       )}
 

@@ -1,8 +1,6 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import { useState, useEffect } from "react";
-import ScrambleText from "@/components/ui/motion/scramble-text";
 
 export const Shimmer = ({
   className,
@@ -11,22 +9,11 @@ export const Shimmer = ({
   className?: string;
   text?: string;
 }) => {
-  const [isInView, setIsInView] = useState(false);
-
-  useEffect(() => {
-    setIsInView(true);
-  }, []);
-
   return (
     <div className={cn("w-full", className)}>
       {text && (
         <div className="mb-4 text-label-large text-black-alpha-56">
-          <ScrambleText
-            text={text}
-            delay={0}
-            duration={1.2}
-            isInView={isInView}
-          />
+          <span>{text}</span>
         </div>
       )}
       <div className="space-y-3">
@@ -48,22 +35,11 @@ export const ShimmerSingle = ({
   className?: string;
   text?: string;
 }) => {
-  const [isInView, setIsInView] = useState(false);
-
-  useEffect(() => {
-    setIsInView(true);
-  }, []);
-
   return (
     <div className={cn("w-full", className)}>
       {text && (
         <div className="mb-2 text-label-small text-black-alpha-56">
-          <ScrambleText
-            text={text}
-            delay={0}
-            duration={1}
-            isInView={isInView}
-          />
+          <span>{text}</span>
         </div>
       )}
       <div className="h-4 rounded-8 bg-gradient-to-r from-black-alpha-4 via-black-alpha-8 to-black-alpha-4 animate-shimmer w-full"></div>
@@ -79,12 +55,6 @@ export const ChartShimmer = ({
   className?: string;
   text?: string;
 }) => {
-  const [isInView, setIsInView] = useState(false);
-
-  useEffect(() => {
-    setIsInView(true);
-  }, []);
-
   return (
     <div className={cn("w-full h-full relative overflow-hidden", className)}>
       {/* Subtle fire glow background */}
@@ -93,12 +63,7 @@ export const ChartShimmer = ({
       {/* Loading text */}
       {text && (
         <div className="absolute top-4 left-4 text-label-small text-black-alpha-56 z-10">
-          <ScrambleText
-            text={text}
-            delay={0}
-            duration={0.8}
-            isInView={isInView}
-          />
+          <span>{text}</span>
         </div>
       )}
 

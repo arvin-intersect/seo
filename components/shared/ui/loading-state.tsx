@@ -2,7 +2,6 @@
 
 import React from "react";
 import { cn } from "@/utils/cn";
-import { CoreFlame } from "@/components/shared/effects/flame";
 
 interface LoadingStateProps {
   message?: string;
@@ -13,7 +12,6 @@ interface LoadingStateProps {
 
 export function LoadingState({
   message = "Loading...",
-  showFlame = true,
   size = "md",
   className,
 }: LoadingStateProps) {
@@ -37,23 +35,14 @@ export function LoadingState({
         className,
       )}
     >
-      {/* Subtle pulsing flame */}
-      {showFlame && (
-        <div className="absolute inset-0">
-          <CoreFlame className="opacity-10 animate-pulse" />
-        </div>
-      )}
-
       <div className="relative z-10 space-y-4">
-        {/* Spinner */}
         <div
           className={cn(
-            "mx-auto rounded-full border-2 border-black-alpha-20 border-t-heat-100 animate-spin",
+            "mx-auto rounded-full border-2 border-black-alpha-20 border-t-primary-100 animate-spin",
             spinnerSizes[size],
           )}
         />
 
-        {/* Message */}
         {message && (
           <p className="text-body-medium text-black-alpha-64">{message}</p>
         )}

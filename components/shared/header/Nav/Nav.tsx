@@ -1,9 +1,3 @@
-import EndpointsCrawl from "@/components/app/(home)/sections/endpoints/EndpointsCrawl/EndpointsCrawl";
-import EndpointsScrape from "@/components/app/(home)/sections/endpoints/EndpointsScrape/EndpointsScrape";
-import EndpointsSearch from "@/components/app/(home)/sections/endpoints/EndpointsSearch/EndpointsSearch";
-import EndpointsExtract from "@/components/app/(home)/sections/endpoints/Extract/Extract";
-import EndpointsMcp from "@/components/app/(home)/sections/endpoints/Mcp/Mcp";
-import { RenderEndpointIcon } from "@/components/shared/header/Nav/RenderEndpointIcon";
 import HeaderDropdownContent from "@/components/shared/header/Dropdown/Content/Content";
 import HeaderDropdownGithub from "@/components/shared/header/Dropdown/Github/Github";
 import HeaderDropdownStories from "@/components/shared/header/Dropdown/Stories/Stories";
@@ -18,12 +12,9 @@ import Lead from "./_svg/Lead";
 import Platforms from "./_svg/Platforms";
 import Research from "./_svg/Research";
 import Student from "./_svg/Student";
-import Templates from "./_svg/Templates";
 import HeaderNavItem from "./Item/Item";
 import MCPIcon from "./_svg/MCP";
-import Image from "@/components/shared/image/Image";
 import GithubFlame from "@/components/shared/header/Dropdown/Github/Flame/Flame";
-import EndpointsMap from "@/components/app/(home)/sections/endpoints/EndpointsMap/EndpointsMap";
 
 export default function HeaderNav() {
   return (
@@ -46,85 +37,40 @@ export const NAV_ITEMS = [
             label: "Endpoints",
             items: [
               {
-                icon: (
-                  <RenderEndpointIcon
-                    icon={EndpointsScrape}
-                    alwaysHeat
-                    triggerOnHover
-                  />
-                ),
+                icon: <div className="w-20 h-20 bg-black-alpha-4 rounded-md" />,
                 label: "Scrape",
                 description: "Turn any url into clean data",
                 href: "https://docs.firecrawl.dev/features/scrape",
                 iconClassName: "-mt-1",
               },
               {
-                icon: (
-                  <RenderEndpointIcon
-                    icon={EndpointsCrawl}
-                    alwaysHeat
-                    triggerOnHover
-                  />
-                ),
+                icon: <div className="w-20 h-20 bg-black-alpha-4 rounded-md" />,
                 label: "Crawl",
                 description: "Crawl entire websites",
                 href: "https://docs.firecrawl.dev/features/crawl",
                 iconClassName: "-mt-1",
               },
               {
-                icon: (
-                  <RenderEndpointIcon
-                    icon={EndpointsSearch}
-                    alwaysHeat
-                    triggerOnHover
-                  />
-                ),
+                icon: <div className="w-20 h-20 bg-black-alpha-4 rounded-md" />,
                 label: "Search",
                 description: "Search and get page content",
                 href: "https://docs.firecrawl.dev/features/search",
                 iconClassName: "-mt-1",
               },
               {
-                icon: (
-                  <RenderEndpointIcon
-                    icon={EndpointsMap}
-                    alwaysHeat
-                    triggerOnHover
-                  />
-                ),
+                icon: <div className="w-20 h-20 bg-black-alpha-4 rounded-md" />,
                 label: "Map",
                 description: "Get all links from a website",
                 href: "https://docs.firecrawl.dev/features/map",
                 iconClassName: "-mt-1",
               },
               {
-                icon: (
-                  <RenderEndpointIcon
-                    icon={EndpointsMcp}
-                    alwaysHeat
-                    triggerOnHover
-                  />
-                ),
+                icon: <div className="w-20 h-20 bg-black-alpha-4 rounded-md" />,
                 label: "MCP",
                 description: "Connect Firecrawl to agents",
                 href: "https://docs.firecrawl.dev/features/mcp",
                 iconClassName: "-mt-1",
               },
-
-              // Extract section in the same column, highlighted as a separate product
-              // {
-              //   icon: <RenderEndpointIcon icon={EndpointsExtract} alwaysHeat triggerOnHover />,
-              //   label: 'Extract',
-              //   description: 'Get structured data from single pages or entire websites with AI.',
-              //   href: '/extract',
-              //   big: true,
-              //   sectionLabel: 'Extract Product',
-              //   iconClassName: 'mt-4',
-              //   ctas: [
-              //     { label: 'View Extract', href: '/extract' },
-              //     { label: 'Try it now', href: '/playground?mode=extract' }
-              //   ]
-              // },
             ],
           },
           {
@@ -204,15 +150,8 @@ export const NAV_ITEMS = [
           {
             label: "Extract API",
             items: [
-              // { icon: <Templates />, label: 'Templates', description: 'Jumpstart your web scraping', href: '/templates' },
               {
-                icon: (
-                  <RenderEndpointIcon
-                    icon={EndpointsExtract}
-                    alwaysHeat
-                    triggerOnHover
-                  />
-                ),
+                icon: <div className="w-20 h-20 bg-black-alpha-4 rounded-md" />,
                 label: "Extract",
                 description: "Get structured data from entire websites",
                 href: "/extract",
@@ -227,21 +166,15 @@ export const NAV_ITEMS = [
                 description: "Try it out in the /extract playground",
                 href: "/app/extract-playground",
               },
-              // { icon: <ArrowRight/>, label: 'Docs', description: 'Read the docs.', href: 'https://docs.firecrawl.dev/features/extract', target: '_blank' },
             ],
           },
         ]}
         sideContent={
           <div className="py-24 px-44 border-b border-border-faint relative overflow-clip">
-            {/* <div className="size-40 relative mb-17"> */}
-            {/*  */}
-            {/* </div> */}
-
             <div className="text-label-large">
               Get web data with a prompt. <br />
               Collect structured data from any number of URLs or entire domains.
             </div>
-
             <GithubFlame />
           </div>
         }
@@ -264,7 +197,6 @@ export const NAV_ITEMS = [
           {
             label: "Resources",
             items: [
-              // { icon: <Templates />, label: 'Templates', description: 'Jumpstart your web scraping', href: '/templates' },
               {
                 icon: <Changelog />,
                 label: "Changelog",

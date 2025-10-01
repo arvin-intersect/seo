@@ -1,53 +1,48 @@
 // FILE: app/page.tsx
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Import shared components
-import Button from "@/components/shared/button/Button";
 import { Connector } from "@/components/shared/layout/curvy-rect";
-import HeroFlame from "@/components/shared/effects/flame/hero-flame";
-import AsciiExplosion from "@/components/shared/effects/flame/ascii-explosion";
 import { HeaderProvider } from "@/components/shared/header/HeaderContext";
 
-// Import hero section components
-import HomeHeroBackground from "@/components/app/(home)/sections/hero/Background/Background";
-import { BackgroundOuterPiece } from "@/components/app/(home)/sections/hero/Background/BackgroundOuterPiece";
-import HomeHeroBadge from "@/components/app/(home)/sections/hero/Badge/Badge";
-import HomeHeroPixi from "@/components/app/(home)/sections/hero/Pixi/Pixi";
-import HomeHeroTitle from "@/components/app/(home)/sections/hero/Title/Title";
+// Import page-specific components
 import HeroInputSubmitButton from "@/components/app/(home)/sections/hero-input/Button/Button";
 import Globe from "@/components/app/(home)/sections/hero-input/_svg/Globe";
-import HeroScraping from "@/components/app/(home)/sections/hero-scraping/HeroScraping";
-import { Endpoint } from "@/components/shared/Playground/Context/types";
-import InlineResults from "@/components/app/(home)/sections/ai-readiness/InlineResults";
 import ControlPanel from "@/components/app/(home)/sections/ai-readiness/ControlPanel";
 
 // Import header components
 import HeaderBrandKit from "@/components/shared/header/BrandKit/BrandKit";
 import HeaderWrapper from "@/components/shared/header/Wrapper/Wrapper";
 import HeaderDropdownWrapper from "@/components/shared/header/Dropdown/Wrapper/Wrapper";
-import GithubIcon from "@/components/shared/header/Github/_svg/GithubIcon";
-import ButtonUI from "@/components/ui/shadcn/button";
+
+interface AnalysisData {
+  success: boolean;
+  url: string;
+  overallScore: number;
+  checks: any[]; // Using any here for simplicity
+  htmlContent: string;
+  metadata: {
+    title: string;
+    description: string;
+    analyzedAt: string;
+  };
+}
 
 export default function StyleGuidePage() {
-  const [tab, setTab] = useState<Endpoint>(Endpoint.Scrape);
   const [url, setUrl] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [analysisStep, setAnalysisStep] = useState(0);
-  const [analysisData, setAnalysisData] = useState<any>(null);
-  const [hasAiKey, setHasAiKey] = useState(false); // Renamed state
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const [hasAiKey, setHasAiKey] = useState(false);
   const [urlError, setUrlError] = useState<string>("");
   
-  // Check for API keys on mount
   useEffect(() => {
     fetch('/api/check-config')
       .then(res => res.json())
       .then(data => {
-        // Check for Google key first, then others as fallbacks if needed
         setHasAiKey(data.hasGoogleKey || data.hasGroqKey || data.hasOpenAIKey || false);
       })
       .catch(() => setHasAiKey(false));
@@ -62,12 +57,8 @@ export default function StyleGuidePage() {
     }
     
     try {
-      const urlObj = new URL(processedUrl);
-      if (!['http:', 'https:'].includes(urlObj.protocol)) {
-        setUrlError('Please enter a valid URL (e.g., example.com)');
-        return;
-      }
-    } catch (error) {
+      new URL(processedUrl);
+    } catch {
       setUrlError('Please enter a valid URL (e.g., example.com)');
       return;
     }
@@ -115,33 +106,18 @@ export default function StyleGuidePage() {
           </div>
           
           <HeaderWrapper>
-            <div className="max-w-[900px] mx-auto w-full flex justify-between items-center">
+            {/* CHANGE START: The header is simplified to only show the logo */}
+            <div className="max-w-[900px] mx-auto w-full flex justify-start items-center">
               <div className="flex gap-24 items-center">
                 <HeaderBrandKit />
               </div>
-              <div className="flex gap-8">
-                <a
-                  className="contents"
-                  href="https://github.com/firecrawl/ai-ready-website"
-                  target="_blank"
-                >
-                  <ButtonUI variant="tertiary">
-                    <GithubIcon />
-                    Use this Template
-                  </ButtonUI>
-                </a>
-              </div>
             </div>
+            {/* CHANGE END */}
           </HeaderWrapper>
         </div>
 
         <section className="overflow-x-clip" id="home-hero">
-          <div className={`pt-28 lg:pt-254 lg:-mt-100 pb-115 relative ${isAnalyzing || showResults ? '' : ''}`} id="hero-content">
-            <HomeHeroPixi />
-            <HeroFlame />
-            <BackgroundOuterPiece />
-            <HomeHeroBackground />
-            
+          <div className={`pt-28 lg:pt-48 pb-115 relative`} id="hero-content">
             <AnimatePresence mode="wait">
               {!isAnalyzing && !showResults ? (
                 <motion.div
@@ -151,21 +127,15 @@ export default function StyleGuidePage() {
                   transition={{ duration: 0.5 }}
                   className="relative container px-16"
                 >
-                  <HomeHeroBadge />
-                  <HomeHeroTitle />
+                  {/* CHANGE START: Hero text is updated for internal tool purpose */}
+                  <h1 className="text-4xl md:text-5xl font-bold text-center text-accent-black leading-tight">
+                    AI-Ready Blog Analyzer
+                  </h1>
                   
-                  <p className="text-center text-body-large">
-                    Analyze how AI-ready your webpage is from a single
-                    <br className="lg-max:hidden" />
-                    page snapshot. High-signal metrics for LLM compatibility.
+                  <p className="text-center text-body-large text-black-alpha-72 mt-6 max-w-xl mx-auto">
+                    An internal tool for the Intersect team to check if a blog post is ready for AI search and analysis.
                   </p>
-                  <Link
-                    className="bg-black-alpha-4 hover:bg-black-alpha-6 rounded-6 px-8 lg:px-6 text-label-large h-30 lg:h-24 block mt-8 mx-auto w-max gap-4 transition-all"
-                    href="#"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Powered by Firecrawl.
-                  </Link>
+                  {/* CHANGE END: "Get in touch" button removed */}
                 </motion.div>
               ) : (
                 <motion.div
@@ -181,11 +151,10 @@ export default function StyleGuidePage() {
                     showResults={showResults}
                     url={url}
                     analysisData={analysisData}
-                    hasAiKey={hasAiKey} // Pass the key status down
+                    hasAiKey={hasAiKey}
                     onReset={() => {
                       setIsAnalyzing(false);
                       setShowResults(false);
-                      setAnalysisStep(0);
                       setAnalysisData(null);
                       setUrl("");
                     }}
@@ -210,25 +179,23 @@ export default function StyleGuidePage() {
               <Connector className="-bottom-10 -left-[10.5px] lg:hidden" />
               <Connector className="-bottom-10 -right-[10.5px] lg:hidden" />
               
-              <div className="max-w-552 mx-auto w-full relative z-[11] lg:z-[2] rounded-20 -mt-30 lg:-mt-30">
+              <div className="max-w-552 mx-auto w-full relative z-[11] rounded-20 -mt-30">
                 <div
-                  className="overlay bg-accent-white"
+                  className="overlay bg-background-lighter"
                   style={{
-                    boxShadow:
-                      "0px 0px 44px 0px rgba(0, 0, 0, 0.02), 0px 88px 56px -20px rgba(0, 0, 0, 0.03), 0px 56px 56px -20px rgba(0, 0, 0, 0.02), 0px 32px 32px -20px rgba(0, 0, 0, 0.03), 0px 16px 24px -12px rgba(0, 0, 0, 0.03), 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 0px 0px 10px #F9F9F9",
+                    boxShadow: "0px 16px 32px -12px rgba(0, 0, 0, 0.1), 0px 0px 0px 1px rgba(255, 255, 255, 0.05)",
                   }}
                 />
                 
                 <div className="p-16 flex gap-12 items-center w-full relative">
                   <Globe />
                   <input
-                    className={`flex-1 bg-transparent text-body-input text-accent-black placeholder:text-black-alpha-48 focus:outline-none focus:ring-0 focus:border-transparent ${urlError ? 'text-heat-200' : ''}`}
-                    placeholder="example.com"
+                    className={`flex-1 bg-transparent text-body-input text-accent-black placeholder:text-black-alpha-48 focus:outline-none focus:ring-0 focus:border-transparent ${urlError ? 'text-red-400' : ''}`}
+                    placeholder="Enter a blog URL to analyze..."
                     type="text"
                     value={url}
                     onChange={(e) => {
-                      const newUrl = e.target.value;
-                      setUrl(newUrl);
+                      setUrl(e.target.value);
                       if (urlError) setUrlError("");
                     }}
                     onKeyDown={(e) => {
@@ -247,7 +214,7 @@ export default function StyleGuidePage() {
                       }
                     }}
                   >
-                    <HeroInputSubmitButton dirty={url.length > 0} tab={tab} />
+                    <HeroInputSubmitButton dirty={url.length > 0} />
                   </div>
                 </div>
                 
@@ -255,18 +222,12 @@ export default function StyleGuidePage() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute -bottom-24 left-16 text-heat-200 text-label-small"
+                    className="absolute -bottom-24 left-16 text-red-400 text-label-small"
                   >
                     {urlError}
                   </motion.div>
                 )}
-                
-                <div className="h-248 top-84 cw-768 pointer-events-none absolute overflow-clip -z-10">
-                  <AsciiExplosion className="-top-200" />
-                </div>
               </div>
-              
-              <HeroScraping />
             </motion.div>
           )}
         </section>

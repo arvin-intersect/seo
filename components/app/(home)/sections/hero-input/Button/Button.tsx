@@ -5,14 +5,12 @@ import ArrowRight from "@/components/app/(home)/sections/hero-input/_svg/ArrowRi
 import Button from "@/components/shared/button/Button";
 
 export default function HeroInputSubmitButton({
-  tab,
   dirty,
 }: {
-  tab: string;
   dirty: boolean;
 }) {
   return (
-    <Button className="hero-input-button !p-0 bg-heat-100 hover:bg-heat-200" size="large" variant="primary">
+    <Button className="hero-input-button !p-0 bg-primary-100 hover:bg-primary-200" size="large" variant="primary">
       <AnimatedWidth>
         <AnimatePresence initial={false} mode="popLayout">
           <motion.div

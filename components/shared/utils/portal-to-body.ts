@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+"use client";
 
-export function Portal({ children }: { children: React.ReactNode }) {
+import { createPortal } from "react-dom";
+import { useState, useEffect, ReactNode } from "react";
+
+export default function PortalToBody({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
-    setPortalNode(document.body);
+    return () => setMounted(false);
   }, []);
+  
+  // Return null on the server or until the component is mounted on the client
+  if (!mounted || typeof document === "undefined") {
+    return null;
+  }
 
-  if (!mounted || !portalNode) return null;
-  return createPortal(children, portalNode);
+  return createPortal(children, document.body);
 }

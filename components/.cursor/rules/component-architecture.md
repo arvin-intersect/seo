@@ -19,7 +19,7 @@ When working with Firecrawl components in the components-new directory:
 ### Shared Components (/shared)
 - Must be used in multiple places (2+ locations)
 - Follow fire design system (heat colors, rounded-12, orange glows)
-- Examples: SlateButton, HeatButton, DashboardCard, FlameBackground
+- Examples: SlateButton, HeatButton, DashboardCard
 - Organized by type: buttons/, cards/, effects/, icons/, layout/, modals/
 
 ### App Components (/app)
@@ -41,7 +41,6 @@ import { FadeIn } from '@/components/ui/motion/fade-in';
 
 // Shared components
 import { SlateButton } from '@/components/shared/buttons/slate-button';
-import { FlameBackground } from '@/components/shared/effects/flame-background';
 import { DashboardCard } from '@/components/shared/cards/dashboard-card';
 
 // Page-specific
@@ -50,11 +49,11 @@ import { UsageChart } from '@/components/app/dashboard/overview/usage-chart';
 // Shared features
 import { TeamSwitcher } from '@/components/shared/teams/team-switcher';
 import { BillingBanner } from '@/components/shared/billing/billing-banner';
-```
 
-## Component Creation Checklist
-1. Determine scope: Is it used in multiple places? → `/shared`, Single page? → `/app`
-2. Check for existing similar components to extend/compose
-3. Follow fire design conventions (colors, animations, spacing)
-4. Export properly in relevant index.ts for clean imports
-5. Document props with TypeScript interfaces and clear descriptions
+Component Creation Checklist
+Determine scope: Is it used in multiple places? → /shared, Single page? → /app
+Check for existing similar components to extend/compose
+Follow fire design conventions (colors, animations, spacing)
+Export properly in relevant index.ts for clean imports
+Document props with TypeScript interfaces and clear descriptions
+
