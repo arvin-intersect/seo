@@ -1,0 +1,13 @@
+export function lockBody() {
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = "hidden";
+  }
+}
+
+export function unlockBody() {
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = "";
+  }
+}
+
+
