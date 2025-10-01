@@ -17,6 +17,7 @@ import ControlPanel from "@/components/app/(home)/sections/ai-readiness/ControlP
 import HeaderBrandKit from "@/components/shared/header/BrandKit/BrandKit";
 import HeaderWrapper from "@/components/shared/header/Wrapper/Wrapper";
 import HeaderDropdownWrapper from "@/components/shared/header/Dropdown/Wrapper/Wrapper";
+// The unused imports for GithubIcon and ButtonUI have been removed.
 
 interface AnalysisData {
   success: boolean;
@@ -106,13 +107,11 @@ export default function StyleGuidePage() {
           </div>
           
           <HeaderWrapper>
-            {/* CHANGE START: The header is simplified to only show the logo */}
             <div className="max-w-[900px] mx-auto w-full flex justify-start items-center">
               <div className="flex gap-24 items-center">
                 <HeaderBrandKit />
               </div>
             </div>
-            {/* CHANGE END */}
           </HeaderWrapper>
         </div>
 
@@ -127,7 +126,6 @@ export default function StyleGuidePage() {
                   transition={{ duration: 0.5 }}
                   className="relative container px-16"
                 >
-                  {/* CHANGE START: Hero text is updated for internal tool purpose */}
                   <h1 className="text-4xl md:text-5xl font-bold text-center text-accent-black leading-tight">
                     AI-Ready Blog Analyzer
                   </h1>
@@ -135,7 +133,6 @@ export default function StyleGuidePage() {
                   <p className="text-center text-body-large text-black-alpha-72 mt-6 max-w-xl mx-auto">
                     An internal tool for the Intersect team to check if a blog post is ready for AI search and analysis.
                   </p>
-                  {/* CHANGE END: "Get in touch" button removed */}
                 </motion.div>
               ) : (
                 <motion.div
