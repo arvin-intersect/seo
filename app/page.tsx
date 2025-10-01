@@ -17,13 +17,21 @@ import ControlPanel from "@/components/app/(home)/sections/ai-readiness/ControlP
 import HeaderBrandKit from "@/components/shared/header/BrandKit/BrandKit";
 import HeaderWrapper from "@/components/shared/header/Wrapper/Wrapper";
 import HeaderDropdownWrapper from "@/components/shared/header/Dropdown/Wrapper/Wrapper";
-// The unused imports for GithubIcon and ButtonUI have been removed.
 
+// Defines the shape of the analysis data to avoid using 'any'
+interface AnalysisCheck {
+  id: string;
+  label: string;
+  status: 'pass' | 'fail' | 'warning';
+  score: number;
+  details: string;
+  recommendation: string;
+}
 interface AnalysisData {
   success: boolean;
   url: string;
   overallScore: number;
-  checks: any[]; // Using any here for simplicity
+  checks: AnalysisCheck[]; // <-- This is the corrected type
   htmlContent: string;
   metadata: {
     title: string;
